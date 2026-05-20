@@ -11,17 +11,18 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 
+// Nhớ import interface ITrackTop của bạn ở đây nếu cần
+
 interface IProps {
-    data: ITrackTop[],
+    data: any[], // Tạm để any, bạn đổi lại thành ITrackTop[] theo code gốc nhé
     title: string
 }
 
 const MainSlider = (props: IProps) => {
     const { data, title } = props
-    // Thay vì dùng Button, dùng IconButton của MUI sẽ dễ làm hình tròn hơn
+
     const NextArrow = (props: any) => {
         const { className, onClick } = props;
-        // Nếu react-slick gắn class 'slick-disabled', nút sẽ bị ẩn đi hoàn toàn
         if (className?.includes("slick-disabled")) return null;
 
         return (
@@ -29,20 +30,20 @@ const MainSlider = (props: IProps) => {
                 onClick={onClick}
                 sx={{
                     position: "absolute",
-                    right: "-20px", // Đẩy nút ra giữa mép slider giống SoundCloud
-                    top: "40%",
+                    right: "-15px",
+                    top: "35%", // Đẩy lên 35% để nằm ngay tâm bức ảnh thay vì tâm cả cục slide
                     zIndex: 2,
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    backgroundColor: "rgba(17, 17, 17, 0.8)", // Màu đen mờ chuẩn SC
                     color: "#fff",
-                    border: "1px solid #333",
+                    // Bỏ border đi cho nút liền mạch giống SoundCloud
                     "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        backgroundColor: "rgba(17, 17, 17, 1)", // Hover thì đen đặc lại
                     },
-                    width: 40,
-                    height: 40,
+                    width: 36,
+                    height: 36,
                 }}
             >
-                <ChevronRightIcon fontSize="large" />
+                <ChevronRightIcon />
             </IconButton>
         )
     }
@@ -56,26 +57,25 @@ const MainSlider = (props: IProps) => {
                 onClick={onClick}
                 sx={{
                     position: "absolute",
-                    left: "-20px",
-                    top: "40%",
+                    left: "-15px",
+                    top: "35%",
                     zIndex: 2,
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    backgroundColor: "rgba(17, 17, 17, 0.8)",
                     color: "#fff",
-                    border: "1px solid #333",
                     "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        backgroundColor: "rgba(17, 17, 17, 1)",
                     },
-                    width: 40,
-                    height: 40,
+                    width: 36,
+                    height: 36,
                 }}
             >
-                <ChevronLeftIcon fontSize="large" />
+                <ChevronLeftIcon />
             </IconButton>
         )
     }
 
     const settings: Settings = {
-        infinite: false, // BẮT BUỘC: Đổi thành false để kích hoạt tính năng chặn ở hai đầu
+        infinite: false,
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 5,
@@ -86,25 +86,52 @@ const MainSlider = (props: IProps) => {
     return (
         <Box
             sx={{
-                margin: "20px 50px",
-                position: "relative", // Cần thiết để các nút absolute căn chỉnh chuẩn theo Box này
+                margin: "0 50px",
+                position: "relative",
+                paddingTop: "20px",
+
+                // STYLE CHO TỪNG TRACK
                 "& .track": {
                     padding: "0 10px",
+                    cursor: "pointer", // Trỏ chuột vào biến thành bàn tay
 
                     "img": {
-                        height: 200,
-                        width: 200
+                        width: "100%",          // Tự co giãn theo cột của slider
+                        aspectRatio: "1/1",     // Ép thành hình vuông
+                        objectFit: "cover",     // Ảnh không bị méo
+                        borderRadius: "4px"     // Bo góc nhẹ giống SoundCloud
                     }
-
                 },
-                "& h3": {
-                    border: "1px solid #ccc",
-                    padding: "20px",
-                    height: "200px",
+
+                // STYLE CHO TIÊU ĐỀ (TÊN BÀI HÁT)
+                "& h4": {
+                    marginTop: "8px",
+                    marginBottom: "4px",
+                    fontSize: "15px",
+                    fontWeight: "600",
+                    // Cụm 3 dòng dưới giúp tạo dấu 3 chấm (...) nếu tên quá dài
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                },
+
+                // STYLE CHO TÊN TÁC GIẢ
+                "& h5": {
+                    margin: 0,
+                    fontSize: "13px",
+                    color: "#999999", // Màu xám nhạt
+                    fontWeight: "normal",
+                    // Cắt chữ dài thành 3 chấm
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    "&:hover": {
+                        color: "#ccc", // Hover vào sáng lên tí
+                    }
                 }
             }}
         >
-            <h2 style={{ marginBottom: "15px" }}> More of what you like </h2>
+            <h2 style={{ marginBottom: "15px", paddingLeft: "10px" }}> {title} </h2>
 
             <Slider {...settings}>
                 {data.map(track => {
