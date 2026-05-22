@@ -1,7 +1,9 @@
 'use client'
 
 import WaveTrack from '@/components/track/wave.track'
+import Container from '@mui/material/Container'
 import { useSearchParams } from 'next/navigation'
+
 
 const TrackDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
     const searchParams = useSearchParams()
@@ -10,12 +12,12 @@ const TrackDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
     console.log("Check params and search", params, audio);
 
     return (
-        <div>
+        <Container>
             Track Detail Page
             <div>
                 <WaveTrack />
             </div>
-        </div>
+        </Container>
     )
 }
 
