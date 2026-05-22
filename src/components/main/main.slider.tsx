@@ -10,11 +10,12 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
+import Link from "next/link";
 
 // Nhớ import interface ITrackTop của bạn ở đây nếu cần
 
 interface IProps {
-    data: any[], // Tạm để any, bạn đổi lại thành ITrackTop[] theo code gốc nhé
+    data: ITrackTop[],
     title: string
 }
 
@@ -137,8 +138,10 @@ const MainSlider = (props: IProps) => {
                 {data.map(track => {
                     return (
                         <div className="track" key={track._id}>
-                            <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} alt="imgTrack" />
-                            <h4>{track.title}</h4>
+                            <Link href={`/track/${track._id}?audio=${track.trackUrl}`}>
+                                <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} alt="imgTrack" />
+                                <h4>{track.title}</h4>
+                            </Link>
                             <h5>{track.uploader.name}</h5>
                         </div>
                     )
