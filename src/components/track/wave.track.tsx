@@ -1,5 +1,5 @@
 'use client'
-import { useWasesurfer } from '@/utils/customHook';
+import { useWaveSurfer } from '@/utils/customHook';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WaveSurferOptions } from 'wavesurfer.js'
@@ -47,14 +47,14 @@ const WaveTrack = () => {
             // progressColor: 'rgb(100, 0, 100)',
             waveColor: gradient,
             progressColor: progressGradient,
-            height: 150,
-            barWidth: 2,
+            height: 100,
+            barWidth: 3,
             url: `/api?audio=${fileName}`,
         }
     }, [fileName])
 
 
-    const waveSurfer = useWasesurfer(containerRef, optionsMemo)
+    const waveSurfer = useWaveSurfer(containerRef, optionsMemo)
 
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -114,6 +114,15 @@ const WaveTrack = () => {
                 <div className='time' ref={timeRef}>0:00</div>
                 <div className='duration' ref={durationRef}>0:00</div>
                 <div ref={hoverRef} className="hover-wave"></div>
+                {/* <div className="overlay"
+                    style={{
+                        position: "absolute",
+                        height: "30px",
+                        width: "100%",
+                        bottom: "0",
+                        background: "#ccc"
+                    }}
+                ></div> */}
             </div>
             <button onClick={() => onPlayClick()}>{isPlaying ? 'Pause' : "Play"}</button>
         </div>
