@@ -26,12 +26,12 @@ const WaveTrack = () => {
 
             // Define the waveform gradient
             gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.15)
-            gradient.addColorStop(0, '#656666') // Top color
-            gradient.addColorStop((canvas.height * 0.7) / canvas.height, '#656666') // Top color
+            gradient.addColorStop(0, '#cecbc8') // Top color
+            gradient.addColorStop((canvas.height * 0.7) / canvas.height, '#cecbc8') // Top color
             gradient.addColorStop((canvas.height * 0.7 + 1) / canvas.height, '#ffffff') // White line
             gradient.addColorStop((canvas.height * 0.7 + 2) / canvas.height, '#ffffff') // White line
-            gradient.addColorStop((canvas.height * 0.7 + 3) / canvas.height, '#B1B1B1') // Bottom color
-            gradient.addColorStop(1, '#B1B1B1') // Bottom color
+            gradient.addColorStop((canvas.height * 0.7 + 3) / canvas.height, '#c0bebd') // Bottom color
+            gradient.addColorStop(1, '#c0bebd') // Bottom color
 
             // Define the progress gradient
             progressGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.15)

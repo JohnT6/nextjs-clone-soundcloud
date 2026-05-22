@@ -116,6 +116,7 @@ export const useWaveSurfer = (containerRef: React.RefObject<HTMLDivElement>, opt
 
                 // Khôi phục lại độ mờ mặc định để không ảnh hưởng đến các thành phần khác
                 ctx.globalAlpha = 1.0;
+
                 // ------------------------------------------------------------------------------
             },
 
