@@ -1,42 +1,45 @@
 .wave-form-container {
-      cursor: pointer;
-      position: relative;
+    cursor: pointer;
+    position: relative;
 
-      &:hover {
-        .hover-wave {
-            opacity: 1;
-        }
-      }
+    // SCSS chuẩn: Hover cha thì tác động đến con
+    &:hover .hover-wave {
+        opacity: 1;
     }
+
     .hover-wave {
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: 10;
-      pointer-events: none;
-      height: 100%;
-      width: 0;
-      mix-blend-mode: overlay;
-      background: rgba(255, 145, 0, 0.5);
-      opacity: 0;
-      transition: opacity 0.2s ease;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        pointer-events: none;
+        height: 100%;
+        width: 0;
+        
+        // Chỉ cần dùng 1 màu trắng mờ, mặt nạ sẽ tự cắt nó thành hình sóng âm!
+        background: rgba(255, 149, 102, 0.2);
+        opacity: 0;
+        transition: opacity 0.2s ease;
     }
 
     .time,
     .duration {
-      position: absolute;
-      z-index: 11;
-      top: 50%;
-      margin-top: -1px;
-      transform: translateY(-50%);
-      font-size: 11px;
-      background: rgba(0, 0, 0, 0.75);
-      padding: 2px;
-      color: #ddd;
+        position: absolute;
+        z-index: 11;
+        top: 50%; // Sửa lại 50% để nó nằm ngay đường cắt giữa
+        transform: translateY(-50%);
+        font-size: 11px;
+        background: rgba(0, 0, 0, 0.75);
+        padding: 3px 6px;
+        border-radius: 4px;
+        color: #ddd;
     }
+
     .time {
-      left: 0;
+        left: 0;
     }
+
     .duration {
-      right: 0;
+        right: 0;
     }
+}

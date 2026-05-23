@@ -180,7 +180,7 @@ export default function AppHeader() {
             <AppBar
                 position="static"
                 sx={{
-                    backgroundColor: "#121212"
+                    backgroundColor: "#121212",
                 }}
             >
                 <Container>

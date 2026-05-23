@@ -13,7 +13,6 @@ const TrackDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
 
     return (
         <Container>
-            Track Detail Page
             <div>
                 <WaveTrack />
             </div>
