@@ -1,6 +1,8 @@
 import ThemeRegistry from '@/components/theme-registry/theme.registry';
 import AppHeader from "@/components/header/app.header";
 import AppFooter from '@/components/footer/app.footer';
+import NextAuthWrapper from './lib/next.auth.provider';
+
 
 
 
@@ -9,10 +11,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ThemeRegistry>
-          <AppHeader />
+          <NextAuthWrapper >
+            <AppHeader />
 
-          {children}
-          <AppFooter />
+            {children}
+            <AppFooter />
+          </NextAuthWrapper>
         </ThemeRegistry>
       </body>
     </html>

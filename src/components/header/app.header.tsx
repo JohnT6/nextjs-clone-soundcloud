@@ -20,6 +20,7 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useSession } from "next-auth/react"
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -64,6 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+    const { data: session } = useSession()
     const router = useRouter()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -220,26 +222,21 @@ export default function AppHeader() {
                                 textDecoration: "none"
                             }
                         }}>
-                            <Link href={"/playlist"}>Playlist</Link>
-                            <Link href={"/like"}>Likes</Link>
-                            <span>Upload</span>
-                            <Avatar
-                                onClick={handleProfileMenuOpen}
+                            {session ? <>
+                                <Link href={"/playlist"}>Playlist</Link>
+                                <Link href={"/like"}>Likes</Link>
+                                <span>Upload</span>
+                                <Avatar
+                                    onClick={handleProfileMenuOpen}
 
-                            >
-                                Ge
-                            </Avatar>
-                            {/* <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton> */}
+                                >
+                                    Ge
+                                </Avatar>
+                            </> : <>
+                                <Link href={"/api/auth/signin"}>Login</Link>
+
+                            </>}
+
                         </Box>
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
