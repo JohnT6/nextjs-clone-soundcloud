@@ -12,8 +12,6 @@ const AppFooter = () => {
 
     if (!hasMounted) return (<></>)
 
-    console.log("Check url backend>>", process.env.NEXT_PUBLIC_BACKEND_URL);
-
     return (
         <div>
             <AppBar position="fixed" color="primary"

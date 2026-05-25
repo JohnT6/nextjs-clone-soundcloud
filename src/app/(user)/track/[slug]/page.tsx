@@ -9,7 +9,6 @@ const TrackDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
     const searchParams = useSearchParams()
 
     const audio = searchParams.get('audio')
-    console.log("Check params and search", params, audio);
 
     return (
         <Container>

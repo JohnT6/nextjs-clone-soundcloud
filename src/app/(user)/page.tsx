@@ -2,13 +2,12 @@ import MainSlider from "@/components/main/main.slider";
 import Container from '@mui/material/Container';
 import { sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function HomePage() {
 
   // Get session
   const session = await getServerSession(authOptions);
-  console.log("Check session >>>>", session);
 
 
   const chills = await sendRequest<IBackendRes<ITrackTop[]>>({
