@@ -19,6 +19,8 @@ import { signIn } from 'next-auth/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function AuthSignin() {
     const router = useRouter();
@@ -32,9 +34,22 @@ export default function AuthSignin() {
         password: ''
     });
 
+    const [openMessage, setOpenMessage] = useState<boolean>(false);
+    const [resMessage, setResMessage] = useState<string>('');
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+    };
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        // Nếu user bấm ra ngoài khoảng không (clickaway) mà bác không muốn nó tắt thì để nguyên dòng này
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        // Tín hiệu 'timeout' từ autoHideDuration sẽ lọt vào đây và tự động set false
+        setOpenMessage(false);
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,7 +79,8 @@ export default function AuthSignin() {
                 // redirect to home
                 router.push("/")
             } else {
-                alert(res.error)
+                setOpenMessage(true);
+                setResMessage(res.error)
             }
             console.log("Check res", res);
 
@@ -170,6 +186,11 @@ export default function AuthSignin() {
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSubmit
+                                }
+                            }}
                             error={!!errors.password}
                             helperText={errors.password}
                             sx={textFieldSx}
@@ -263,6 +284,20 @@ export default function AuthSignin() {
                     </Button>
                 </Stack>
             </Container>
-        </Box>
+            <Snackbar
+                open={openMessage}
+                autoHideDuration={5000}
+                onClose={handleClose}   // ...nó sẽ tự động kích hoạt hàm này để tắt!
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {resMessage}
+                </Alert>
+            </Snackbar>
+        </Box >
     );
 }
