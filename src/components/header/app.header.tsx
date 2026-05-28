@@ -229,7 +229,7 @@ export default function AppHeader() {
                             {session ? <>
                                 <Link href={"/playlist"}>Playlist</Link>
                                 <Link href={"/like"}>Likes</Link>
-                                <span>Upload</span>
+                                <Link href={"/track/upload"}>Upload</Link>
                                 <Avatar
                                     onClick={handleProfileMenuOpen}
 
