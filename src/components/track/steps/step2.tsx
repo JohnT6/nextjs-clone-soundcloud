@@ -1,5 +1,5 @@
 import { Box, Button, Grid, LinearProgress, LinearProgressProps, MenuItem, TextField, Typography } from "@mui/material"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { ITrackUpload } from "../upload.tabs";
@@ -58,9 +58,34 @@ interface IProps {
     trackUpload: ITrackUpload
 }
 
+interface INewTrack {
+    title: string,
+    description: string,
+    trackUrl: string,
+    imgUrl: string,
+    category: string,
+}
+
 const Step2 = (props: IProps) => {
     const { trackUpload } = props
+
+    const [info, setInfo] = useState<INewTrack>({
+        title: "",
+        description: "",
+        trackUrl: "",
+        imgUrl: "",
+        category: "",
+    });
     console.log("Check trackUpload", trackUpload);
+
+    useEffect(() => {
+        if (trackUpload && trackUpload.uploadedTrackName) {
+            setInfo({
+                ...info,
+                trackUrl: trackUpload.uploadedTrackName
+            })
+        }
+    }, [trackUpload])
 
     const category = [
         {
@@ -76,6 +101,9 @@ const Step2 = (props: IProps) => {
             label: 'PARTY',
         }
     ];
+
+    // Mai coi lại các phần của track upload và đang có bug cái process tự về 0%
+    console.log("Check info", info);
 
 
     return (
@@ -111,13 +139,35 @@ const Step2 = (props: IProps) => {
 
                 </Grid>
                 <Grid item xs={6} md={8}>
-                    <TextField id="standard-basic" label="Title" variant="standard" fullWidth margin="dense" />
-                    <TextField id="standard-basic" label="Description" variant="standard" fullWidth margin="dense" />
+                    <TextField
+                        value={info.title}
+                        onChange={(e) => setInfo({
+                            ...info,
+                            title: e.target.value
+                        })}
+                        label="Title"
+                        variant="standard"
+                        fullWidth
+                        margin="dense" />
+                    <TextField
+                        value={info.description}
+                        onChange={(e) => setInfo({
+                            ...info,
+                            description: e.target.value
+                        })}
+                        label="Description"
+                        variant="standard"
+                        fullWidth
+                        margin="dense" />
                     <TextField
                         sx={{
                             mt: 3
                         }}
-                        id="outlined-select-currency"
+                        value={info.category}
+                        onChange={(e) => setInfo({
+                            ...info,
+                            category: e.target.value
+                        })}
                         select
                         label="Category"
                         fullWidth
