@@ -6,6 +6,7 @@ import { ITrackUpload } from "../upload.tabs";
 import { useSession } from "next-auth/react"
 import axios from "axios";
 import { sendRequest } from "@/utils/api";
+import { useToast } from "@/utils/toast";
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
     return (
@@ -98,7 +99,8 @@ function InputFileUpload(props: IUploadImages) {
 }
 
 interface IProps {
-    trackUpload: ITrackUpload
+    trackUpload: ITrackUpload,
+    setValue: (v: number) => void
 }
 
 interface INewTrack {
@@ -113,6 +115,8 @@ const Step2 = (props: IProps) => {
     const { data: session } = useSession()
 
     const { trackUpload } = props
+
+    const toast = useToast()
 
     const [info, setInfo] = useState<INewTrack>({
         title: "",
@@ -163,9 +167,12 @@ const Step2 = (props: IProps) => {
             },
         })
         if (res.data) {
-            alert("Create Success")
+            toast.success("Create a new track success!")
+            props.setValue(0)
+            // alert("Create Success")
         } else {
-            alert(res.message)
+            toast.error(res.message)
+            // alert(res.message)
         }
     }
 
@@ -180,6 +187,7 @@ const Step2 = (props: IProps) => {
                 </div>
                 <LinearWithValueLabel
                     trackUpload={trackUpload}
+                    setValue={props.setValue}
                 />
             </div>
 
