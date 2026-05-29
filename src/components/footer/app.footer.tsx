@@ -1,11 +1,13 @@
 'use client'
 import { useHasMounted } from "@/utils/customHook";
-import { AppBar, Container } from "@mui/material"
-import { log } from "console";
-import AudioPlayer from 'react-h5-audio-player';
+import { AppBar, Container, Box, Typography, IconButton } from "@mui/material"
+import AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
 //@ts-ignore
 import 'react-h5-audio-player/lib/styles.css';
 
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 const AppFooter = () => {
     const hasMounted = useHasMounted();
@@ -14,40 +16,153 @@ const AppFooter = () => {
 
     return (
         <div style={{ marginTop: 50 }}>
-            <AppBar position="fixed" color="primary"
+            <AppBar
+                position="fixed"
                 sx={{
                     top: 'auto',
                     bottom: 0,
-                    backgroundColor: "#f2f2f2"
-                }}>
+                    backgroundColor: "#f2f2f2", // Màu nền xám nhạt
+                    borderTop: "1px solid #cecece",
+                    boxShadow: "none"
+                }}
+            >
                 <Container
                     sx={{
                         display: "flex",
-                        gap: 10
+                        alignItems: "center",
+                        height: 50,
+                        padding: "0 10px !important"
                     }}
                 >
-                    <AudioPlayer
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
-                        volume={0.5}
-                        style={{
-                            backgroundColor: "#f2f2f2",
-                            boxShadow: "unset"
-                        }}
-                    // Try other props!
-                    />
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "start",
-                        justifyContent: "center",
-                        minWidth: 100
+                    {/* 1. KHU VỰC AUDIO PLAYER */}
+                    <Box sx={{
+                        flexGrow: 1,
+
+                        // TRẢ VỀ STYLE LIGHT THEME MẶC ĐỊNH
+                        '& .rhap_container': {
+                            backgroundColor: 'transparent',
+                            boxShadow: 'none',
+                            padding: '0 20px',
+                        },
+                        '& .rhap_time': {
+                            color: '#666',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+
+                        // --- 1. KHÓA CỤM NÚT BẤM (KHÔNG CHO PHÌNH TO) ---
+                        '& .rhap_controls-section': {
+                            flex: '0 0 auto ', // Chỉ to bằng đúng các nút bên trong
+                            margin: "0 10px",
+                            gap: "10px"
+                        },
+
+                        // --- 2. ÉP THANH TIẾN TRÌNH DÀI SANG TRÁI ---
+                        '& .rhap_progress-section': {
+                            flex: '1 1 auto ', // Giãn hết cỡ lấp đầy khoảng trống
+                        },
+
+                        '& .rhap_progress-bar': {
+                            backgroundColor: '#ddd',
+                        },
+                        '& .rhap_progress-indicator': {
+                            backgroundColor: '#f50', // Cục cam Soundcloud
+                            boxShadow: 'none',
+                        },
+                        '& .rhap_progress-filled': {
+                            backgroundColor: '#f50',
+                        },
+                        '& .rhap_main-controls-button': {
+                            color: '#333',
+                        },
+
+                        // --- CHỈNH LẠI CỤM LOA ---
+                        '& .rhap_volume-button': {
+                            color: '#666',
+                        },
+                        '& .rhap_volume-container': {
+                            marginLeft: '15px ', // Cách icon loa ra 15px
+
+                        },
+                        '& .rhap_volume-bar': {
+                            background: '#ddd',
+                        },
+                        '& .rhap_volume-indicator': {
+                            background: '#f50',
+                            boxShadow: 'none',
+                        },
+                        '& .rhap_volume-filled': {
+                            backgroundColor: '#f50',
+                        }
                     }}>
-                        <div style={{ color: "#ccc" }}>Genzo</div>
-                        <div style={{ color: "black" }}>Who am i?</div>
-                    </div>
+                        <AudioPlayer
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
+                            volume={0.5}
+                            layout="horizontal-reverse"
+                            customControlsSection={[
+                                RHAP_UI.MAIN_CONTROLS,
+                                RHAP_UI.ADDITIONAL_CONTROLS,
+                            ]}
+                            customProgressBarSection={[
+                                RHAP_UI.CURRENT_TIME,
+                                RHAP_UI.PROGRESS_BAR,
+                                RHAP_UI.DURATION,
+                                RHAP_UI.VOLUME,
+                            ]}
+                        />
+                    </Box>
+
+                    {/* 2. KHU VỰC THÔNG TIN BÀI HÁT */}
+                    <Box sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        minWidth: "280px",
+                        paddingLeft: 2,
+                        borderLeft: "1px solid #cecece"
+                    }}>
+                        {/* Ảnh Thumbnail */}
+                        <Box sx={{
+                            width: 32,
+                            height: 32,
+                            backgroundColor: "#ccc",
+                            borderRadius: '2px',
+                            overflow: 'hidden'
+                        }}>
+                        </Box>
+
+                        {/* Text màu chữ tối */}
+                        <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, overflow: 'hidden' }}>
+                            <Typography
+                                variant="caption"
+                                sx={{ color: "#666", lineHeight: 1.2, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                            >
+                                xpanchox
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{ color: "#333", fontSize: "13px", fontWeight: "bold", whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                            >
+                                YG - Im Good
+                            </Typography>
+                        </Box>
+
+                        {/* Các nút tương tác màu xám, hover lên đen */}
+                        <Box sx={{ display: "flex", color: "#666" }}>
+                            <IconButton size="small" color="inherit" sx={{ '&:hover': { color: 'black' } }}>
+                                <FavoriteBorderIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" color="inherit" sx={{ '&:hover': { color: 'black' } }}>
+                                <PersonAddAltIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton size="small" color="inherit" sx={{ '&:hover': { color: 'black' } }}>
+                                <QueueMusicIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    </Box>
+
                 </Container>
             </AppBar>
-
         </div>
     )
 }
