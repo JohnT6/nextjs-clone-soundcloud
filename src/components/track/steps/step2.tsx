@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { ITrackUpload } from "../upload.tabs";
+import { useSession } from "next-auth/react"
+import axios from "axios";
+import { sendRequest } from "@/utils/api";
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
     return (
@@ -42,11 +45,51 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
+interface IUploadImages {
+    info: INewTrack,
+    setInfo: (v: INewTrack) => void
+}
 
-function InputFileUpload() {
+function InputFileUpload(props: IUploadImages) {
+    const { data: session } = useSession()
+    const handleUpload = async (image: File) => {
+        const formData = new FormData();
+        formData.append("fileUpload", image);
+        try {
+            const res = await axios.post("http://localhost:8000/api/v1/files/upload", formData, {
+                headers: {
+                    Authorization: `Bearer ${session?.access_token}`,
+                    "target_type": "images",
+                    // delay: 5000
+                },
+
+            })
+            props.setInfo({
+                ...props.info,
+                imgUrl: res?.data.data.fileName
+            })
+            // console.log("Check res", res);
+            // console.log("Check filename", res?.data.data.fileName);
+
+        } catch (error) {
+            //@ts-ignore
+            console.log("Check err:", error?.response?.data);
+            //@ts-ignore
+            alert(error?.response?.data.message)
+        }
+    }
+
     return (
         <Button
-            onClick={(e) => e.preventDefault()}
+            onChange={(e) => {
+                const event = e.target as HTMLInputElement
+                if (event.files) {
+                    handleUpload(event.files[0])
+                }
+            }
+
+            }
+            // onClick={(e) => e.preventDefault()}
             component="label" variant="contained" startIcon={<CloudUploadIcon />}>
             Upload file
             <VisuallyHiddenInput type="file" />
@@ -67,6 +110,8 @@ interface INewTrack {
 }
 
 const Step2 = (props: IProps) => {
+    const { data: session } = useSession()
+
     const { trackUpload } = props
 
     const [info, setInfo] = useState<INewTrack>({
@@ -102,8 +147,29 @@ const Step2 = (props: IProps) => {
         }
     ];
 
-    // Mai coi lại các phần của track upload và đang có bug cái process tự về 0%
-    console.log("Check info", info);
+    const handleSubmitUpload = async () => {
+        const res = await sendRequest<IBackendRes<ITrackTop[]>>({
+            url: "http://localhost:8000/api/v1/tracks",
+            method: "POST",
+            body: {
+                title: info.title,
+                description: info.description,
+                trackUrl: info.trackUrl,
+                imgUrl: info.imgUrl,
+                category: info.category,
+            },
+            headers: {
+                Authorization: `Bearer ${session?.access_token}`,
+            },
+        })
+        if (res.data) {
+            alert("Create Success")
+        } else {
+            alert(res.message)
+        }
+    }
+
+
 
 
     return (
@@ -129,12 +195,15 @@ const Step2 = (props: IProps) => {
                 >
                     <div style={{ height: 250, width: 250, background: "#ccc" }}>
                         <div>
-
+                            {info.imgUrl && <img style={{ height: 250, width: 250, background: "#ccc", objectFit: "cover" }} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imgUrl}`} />}
                         </div>
 
                     </div>
                     <div >
-                        <InputFileUpload />
+                        <InputFileUpload
+                            info={info}
+                            setInfo={setInfo}
+                        />
                     </div>
 
                 </Grid>
@@ -184,7 +253,11 @@ const Step2 = (props: IProps) => {
                         variant="outlined"
                         sx={{
                             mt: 5
-                        }}>Save</Button>
+                        }}
+                        onClick={() => handleSubmitUpload()}
+                    >
+                        Save
+                    </Button>
                 </Grid>
             </Grid>
         </>

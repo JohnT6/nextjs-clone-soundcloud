@@ -75,10 +75,12 @@ const Step1 = (props: IProps) => {
                         })
                     }
                 })
-                props.setTrackUpload({
-                    ...props.trackUpload,
+                props.setTrackUpload((prevState: ITrackUpload) => ({
+
+                    ...prevState,
                     uploadedTrackName: res?.data.data.fileName
-                })
+
+                }))
                 console.log("Check res", res);
                 console.log("Check filename", res?.data.data.fileName);
 
