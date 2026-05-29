@@ -13,7 +13,7 @@ const AppFooter = () => {
     if (!hasMounted) return (<></>)
 
     return (
-        <div>
+        <div style={{ marginTop: 50 }}>
             <AppBar position="fixed" color="primary"
                 sx={{
                     top: 'auto',
