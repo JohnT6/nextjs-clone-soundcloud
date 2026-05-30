@@ -8,11 +8,27 @@ import 'react-h5-audio-player/lib/styles.css';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
+import { useTrackContext } from "@/app/lib/track.wrapper";
+import { useRef } from "react";
 
 const AppFooter = () => {
     const hasMounted = useHasMounted();
-
+    const playerRef = useRef(null);
     if (!hasMounted) return (<></>)
+
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+
+    console.log("Check currentTrack", currentTrack);
+
+
+    if (currentTrack.isPlaying) {
+        //@ts-ignore
+        playerRef?.current?.audio?.current?.play();
+
+    } else {
+        //@ts-ignore
+        playerRef?.current?.audio?.current?.pause();
+    }
 
     return (
         <div style={{ marginTop: 50 }}>
@@ -96,7 +112,8 @@ const AppFooter = () => {
                         }
                     }}>
                         <AudioPlayer
-                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
+                            ref={playerRef}
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
                             volume={0.5}
                             layout="horizontal-reverse"
                             customControlsSection={[
@@ -109,6 +126,8 @@ const AppFooter = () => {
                                 RHAP_UI.DURATION,
                                 RHAP_UI.VOLUME,
                             ]}
+                            onPlay={() => setCurrentTrack({ ...currentTrack, isPlaying: true })}
+                            onPause={() => setCurrentTrack({ ...currentTrack, isPlaying: false })}
                         />
                     </Box>
 

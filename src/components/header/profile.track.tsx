@@ -11,11 +11,14 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { ListItem } from '@mui/material';
+import { useTrackContext } from '@/app/lib/track.wrapper';
+import { Pause } from '@mui/icons-material';
 
 
 const ProfileTracks = (props: any) => {
     const { data } = props;
     const theme = useTheme();
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
     return (
         <Card sx={{ display: 'flex', justifyContent: "space-between" }}>
@@ -32,9 +35,26 @@ const ProfileTracks = (props: any) => {
                     <IconButton aria-label="previous">
                         {theme.direction === 'rtl' ? <SkipNextIcon /> : <SkipPreviousIcon />}
                     </IconButton>
-                    <IconButton aria-label="play/pause">
-                        <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-                    </IconButton>
+                    {(data._id !== currentTrack._id || data._id === currentTrack._id && !currentTrack.isPlaying)
+                        &&
+                        <IconButton aria-label="play/pause"
+                            onClick={() => setCurrentTrack({ ...data, isPlaying: true })}
+                        >
+
+                            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+                        </IconButton>
+                    }
+                    {
+                        (data._id === currentTrack._id && currentTrack.isPlaying)
+                        &&
+                        <IconButton aria-label="play/pause"
+                            onClick={() => setCurrentTrack({ ...data, isPlaying: false })}
+                        >
+
+                            <Pause sx={{ height: 38, width: 38 }} />
+                        </IconButton>
+                    }
+
                     <IconButton aria-label="next">
                         {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
                     </IconButton>
