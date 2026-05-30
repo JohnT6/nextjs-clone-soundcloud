@@ -14,11 +14,12 @@ import { useRef } from "react";
 const AppFooter = () => {
     const hasMounted = useHasMounted();
     const playerRef = useRef(null);
-    if (!hasMounted) return (<></>)
-
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
-    console.log("Check currentTrack", currentTrack);
+
+    if (!hasMounted) return (<></>)
+
+
 
 
     if (currentTrack.isPlaying) {
@@ -148,6 +149,13 @@ const AppFooter = () => {
                             borderRadius: '2px',
                             overflow: 'hidden'
                         }}>
+                            <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`} alt="imeTrack"
+                                style={{
+                                    objectFit: "cover",
+                                    width: 32,
+                                    height: 32,
+                                }}
+                            />
                         </Box>
 
                         {/* Text màu chữ tối */}
@@ -156,13 +164,13 @@ const AppFooter = () => {
                                 variant="caption"
                                 sx={{ color: "#666", lineHeight: 1.2, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
                             >
-                                xpanchox
+                                {currentTrack.uploader.name}
                             </Typography>
                             <Typography
                                 variant="body2"
                                 sx={{ color: "#333", fontSize: "13px", fontWeight: "bold", whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
                             >
-                                YG - Im Good
+                                {currentTrack.title}
                             </Typography>
                         </Box>
 

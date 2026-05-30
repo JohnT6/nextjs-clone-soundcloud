@@ -7,12 +7,14 @@ import { WaveSurferOptions } from 'wavesurfer.js'
 import './wave.scss'
 import { Pause, PauseCircle, PauseCircleOutline, PlayArrow } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
+import { sendRequest } from '@/utils/api';
 
 
 
 const WaveTrack = () => {
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio')
+    const id = searchParams.get('id')
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
     const timeRef = useRef<HTMLDivElement>(null);
@@ -62,6 +64,7 @@ const WaveTrack = () => {
     const waveSurfer = useWaveSurfer(containerRef, optionsMemo)
 
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [trackInfo, setTrackInfo] = useState<ITrackTop | null>(null)
 
 
     useEffect(() => {
@@ -102,6 +105,19 @@ const WaveTrack = () => {
             subscriptions.forEach((unSub) => unSub());
         }
     }, [waveSurfer])
+
+    useEffect(() => {
+        const fetch = async () => {
+            const res = await sendRequest<IBackendRes<ITrackTop>>({
+                url: `http://localhost:8000/api/v1/tracks/${id}`,
+                method: "GET",
+            })
+            if (res && res.data) {
+                setTrackInfo(res.data)
+            }
+        }
+        fetch();
+    }, [id])
 
     const onPlayClick = useCallback(() => {
         if (waveSurfer) {
@@ -204,7 +220,7 @@ const WaveTrack = () => {
                                     color: "white",
                                     fontWeight: 500
                                 }}>
-                                    Galway Girl
+                                    {trackInfo?.title}
                                 </div>
                                 <div style={{
                                     padding: "2px 8px",
@@ -213,7 +229,7 @@ const WaveTrack = () => {
                                     width: "fit-content",
                                     color: "#ccc"
                                 }}>
-                                    Ed Sheeran
+                                    {trackInfo?.uploader.name}
                                 </div>
                             </div>
                         </div>
@@ -235,7 +251,7 @@ const WaveTrack = () => {
                         <div className='comments' style={{ position: "relative" }}>
                             {arrComments.map(item => {
                                 return (
-                                    <Tooltip title={item.content} arrow>
+                                    <Tooltip title={item.content} arrow key={item.id}>
                                         <img
                                             onPointerMove={(e) => {
                                                 const hover = hoverRef.current!;
@@ -269,14 +285,18 @@ const WaveTrack = () => {
                         justifyContent: "flex-end", // Đẩy ảnh bám sát lề phải
                     }}
                 >
-                    <div style={{
-                        background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
-                        width: 320,
-                        height: 320,
-                        boxShadow: "0 0 10px rgba(0,0,0,0.3)", // Thêm chút bóng đổ cho ảnh nổi bật
-                        borderRadius: "3%"
-                    }}>
-                    </div>
+                    <img
+                        src={`http://localhost:8000/images/${trackInfo?.imgUrl}`} alt="imgTrack"
+                        style={{
+                            background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
+                            width: 320,
+                            height: 320,
+                            boxShadow: "0 0 10px rgba(0,0,0,0.3)", // Thêm chút bóng đổ cho ảnh nổi bật
+                            borderRadius: "3%",
+                            objectFit: "cover",
+                            overflow: "hidden"
+                        }}>
+                    </img>
                 </div>
             </div>
         </div>
