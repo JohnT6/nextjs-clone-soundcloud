@@ -24,7 +24,9 @@ export const TrackContextProvider = ({ children }: { children: React.ReactNode }
         isDeleted: false,
         createdAt: "",
         updatedAt: "",
-        isPlaying: false
+        isPlaying: false,
+        // dùng lấy tgian của bài nhạc đang phát
+        trackCurrentTime: 0
     }
     const [currentTrack, setCurrentTrack] = useState<IShareTrack>(initValue);
 

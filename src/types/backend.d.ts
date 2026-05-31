@@ -52,11 +52,13 @@ declare global {
 
     interface IShareTrack extends ITrackTop {
         isPlaying: boolean
+        // DÒNG NÀY ĐỂ ĐỒNG BỘ TUA NHẠC
+        trackCurrentTime: number
     }
 
     interface ITrackContext {
         currentTrack: IShareTrack,
-        setCurrentTrack: (v: IShareTrack) => void
+        setCurrentTrack: React.Dispatch<React.SetStateAction<IShareTrack>>
     }
 
 }

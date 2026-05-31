@@ -9,27 +9,39 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import { useTrackContext } from "@/app/lib/track.wrapper";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const AppFooter = () => {
     const hasMounted = useHasMounted();
-    const playerRef = useRef(null);
+    const playerRef = useRef<AudioPlayer>(null);
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
+
+    // 1. CHUYỂN LOGIC PLAY/PAUSE VÀO USE-EFFECT
+    useEffect(() => {
+        if (playerRef.current && playerRef.current.audio.current) {
+            if (currentTrack.isPlaying) {
+                playerRef.current.audio.current.play();
+            } else {
+
+                playerRef.current.audio.current.pause();
+            }
+        }
+    }, [currentTrack.isPlaying]); // Chỉ chạy lại khi trạng thái isPlaying thay đổi
+
+    // 2. LẮNG NGHE KHI SÓNG ÂM BỊ TUA THÌ FOOTER TUA THEO
+    useEffect(() => {
+        if (playerRef.current && playerRef.current.audio.current && currentTrack.trackCurrentTime !== undefined) {
+            playerRef.current.audio.current.currentTime = currentTrack.trackCurrentTime;
+        }
+    }, [currentTrack.trackCurrentTime]);
 
     if (!hasMounted) return (<></>)
 
 
 
 
-    if (currentTrack.isPlaying) {
-        //@ts-ignore
-        playerRef?.current?.audio?.current?.play();
 
-    } else {
-        //@ts-ignore
-        playerRef?.current?.audio?.current?.pause();
-    }
 
     return (
         <div style={{ marginTop: 50 }}>
@@ -129,6 +141,13 @@ const AppFooter = () => {
                             ]}
                             onPlay={() => setCurrentTrack({ ...currentTrack, isPlaying: true })}
                             onPause={() => setCurrentTrack({ ...currentTrack, isPlaying: false })}
+                            // --- DÒNG NÀY ĐỂ BÁO TÍN HIỆU TUA NHẠC ---
+                            onSeeked={(e: any) => {
+                                setCurrentTrack({
+                                    ...currentTrack,
+                                    trackCurrentTime: e.target.currentTime
+                                });
+                            }}
                         />
                     </Box>
 

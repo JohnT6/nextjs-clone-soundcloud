@@ -8,17 +8,22 @@ import './wave.scss'
 import { Pause, PauseCircle, PauseCircleOutline, PlayArrow } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
 import { sendRequest } from '@/utils/api';
+import { useTrackContext } from '@/app/lib/track.wrapper';
 
+interface IProps {
+    track: ITrackTop | null
+}
 
-
-const WaveTrack = () => {
+const WaveTrack = (props: IProps) => {
+    const { track } = props
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio')
-    const id = searchParams.get('id')
+    // const id = searchParams.get('id')
     const containerRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
     const timeRef = useRef<HTMLDivElement>(null);
     const durationRef = useRef<HTMLDivElement>(null);
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
 
     const optionsMemo = useMemo((): Omit<WaveSurferOptions, 'container'> => {
@@ -64,7 +69,7 @@ const WaveTrack = () => {
     const waveSurfer = useWaveSurfer(containerRef, optionsMemo)
 
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [trackInfo, setTrackInfo] = useState<ITrackTop | null>(null)
+
 
 
     useEffect(() => {
@@ -76,6 +81,9 @@ const WaveTrack = () => {
 
         const hover = hoverRef.current!
         const waveform = containerRef.current!
+
+        waveSurfer.setVolume(0);
+
         //@ts-ignore
         waveform.addEventListener('pointermove', (e) => (hover.style.width = `${e.offsetX}px`))
 
@@ -98,6 +106,11 @@ const WaveTrack = () => {
             waveSurfer.on('click', () => {
                 waveSurfer.play()
             }),
+            // 2. BẮT SỰ KIỆN KHI USER CLICK VÀO SÓNG ÂM ĐỂ TUA
+            waveSurfer.on('interaction', (newTime) => {
+                // Cập nhật thời gian vừa tua lên Context để gửi cho Footer
+                setCurrentTrack(prev => ({ ...prev, trackCurrentTime: newTime }));
+            })
 
         ]
 
@@ -107,17 +120,25 @@ const WaveTrack = () => {
     }, [waveSurfer])
 
     useEffect(() => {
-        const fetch = async () => {
-            const res = await sendRequest<IBackendRes<ITrackTop>>({
-                url: `http://localhost:8000/api/v1/tracks/${id}`,
-                method: "GET",
-            })
-            if (res && res.data) {
-                setTrackInfo(res.data)
-            }
+        if (track?._id === currentTrack._id && waveSurfer) {
+            currentTrack.isPlaying ? waveSurfer.play() : waveSurfer.pause()
         }
-        fetch();
-    }, [id])
+    }, [currentTrack])
+
+    useEffect(() => {
+        // Chỉ chạy khi bác kéo Footer làm trackCurrentTime thay đổi
+        if (waveSurfer && currentTrack.trackCurrentTime !== undefined) {
+            const waveTime = waveSurfer.getCurrentTime();
+
+            // Lọc nhiễu: Chỉ ép Sóng âm nhảy nếu thời gian lệch nhau rõ rệt (hơn 0.1 giây).
+            // Việc này chặn đứng bug "Vòng lặp vô tận" (Footer gọi Sóng âm -> Sóng âm lại gọi Footer)
+            if (Math.abs(waveTime - currentTrack.trackCurrentTime) > 0.1) {
+                // Hàm mặc định của WaveSurfer để ép nó nhảy thời gian
+                waveSurfer.setTime(currentTrack.trackCurrentTime);
+            }
+
+        }
+    }, [currentTrack.trackCurrentTime, waveSurfer]);
 
     const onPlayClick = useCallback(() => {
         if (waveSurfer) {
@@ -191,7 +212,11 @@ const WaveTrack = () => {
                         <div style={{ display: "flex", gap: 20 }}>
                             {/* Nút Play (Đổi thành màu đen, to hơn) */}
                             <div
-                                onClick={() => onPlayClick()}
+                                onClick={() => {
+                                    onPlayClick()
+                                    if (track && waveSurfer)
+                                        setCurrentTrack({ ...track, isPlaying: waveSurfer.isPlaying(), trackCurrentTime: waveSurfer.getCurrentTime() })
+                                }}
                                 style={{
                                     borderRadius: "50%",
                                     background: "#111", // Đen chuẩn SC
@@ -220,7 +245,7 @@ const WaveTrack = () => {
                                     color: "white",
                                     fontWeight: 500
                                 }}>
-                                    {trackInfo?.title}
+                                    {track?.title}
                                 </div>
                                 <div style={{
                                     padding: "2px 8px",
@@ -229,7 +254,7 @@ const WaveTrack = () => {
                                     width: "fit-content",
                                     color: "#ccc"
                                 }}>
-                                    {trackInfo?.uploader.name}
+                                    {track?.uploader.name}
                                 </div>
                             </div>
                         </div>
@@ -286,7 +311,7 @@ const WaveTrack = () => {
                     }}
                 >
                     <img
-                        src={`http://localhost:8000/images/${trackInfo?.imgUrl}`} alt="imgTrack"
+                        src={`http://localhost:8000/images/${track?.imgUrl}`} alt="imgTrack"
                         style={{
                             background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
                             width: 320,
