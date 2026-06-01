@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import WaveSurfer from 'wavesurfer.js';
 import { useTrackContext } from "@/app/lib/track.wrapper";
+import LikeTrack from "./like.track";
 
 // Mock data giả lập giống hệt trong ảnh
 const mockComments = [
@@ -106,7 +107,7 @@ const CommentTrack = (props: IProps) => {
         }}>
 
             {/* === PHẦN 1: THANH NHẬP BÌNH LUẬN === */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 5 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Avatar src={fetchDefaultImages(session?.user.type!)} sx={{ width: 40, height: 40 }} />
                 <InputBase
                     placeholder="Write a comment"
@@ -132,6 +133,12 @@ const CommentTrack = (props: IProps) => {
                     }}
                 />
             </Box>
+
+            <div>
+                <LikeTrack
+                    track={track}
+                />
+            </div>
 
             {/* === PHẦN 2: MAIN LAYOUT (CHIA 2 CỘT) === */}
             <Box sx={{ display: "flex", gap: 5 }}>

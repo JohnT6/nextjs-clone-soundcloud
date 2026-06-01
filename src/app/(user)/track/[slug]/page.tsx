@@ -10,6 +10,8 @@ const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }
     const res = await sendRequest<IBackendRes<ITrackTop>>({
         url: `http://localhost:8000/api/v1/tracks/${(await params).slug}`,
         method: "GET",
+        // Tắt cache hoàn toàn, luôn gọi API để lấy dữ liệu mới nhất từ server mỗi khi load trang (chuẩn SSR).
+        nextOption: { cache: "no-store" }
     })
 
     const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
