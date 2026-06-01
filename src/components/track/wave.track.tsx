@@ -153,7 +153,7 @@ const WaveTrack = (props: IProps) => {
 
 
     const calcLeft = (moment: number) => {
-        const hashCodeTime = 199;
+        const hashCodeTime = waveSurfer?.getDuration() ?? 0;
         const present = (moment / hashCodeTime) * 100;
         return `${present}%`
     }
@@ -304,6 +304,7 @@ const WaveTrack = (props: IProps) => {
                 <CommentTrack
                     track={track}
                     trackComment={trackComment}
+                    waveSurfer={waveSurfer}
                 />
             </div>
         </div>

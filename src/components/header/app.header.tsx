@@ -190,7 +190,10 @@ export default function AppHeader() {
                     backgroundColor: "#121212",
                 }}
             >
-                <Container>
+                <Container
+                    // Giúp bỏ padding mặc định của cái MUI
+                    disableGutters
+                >
                     <Toolbar>
                         <Typography
                             variant="h6"

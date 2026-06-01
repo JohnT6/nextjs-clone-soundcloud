@@ -49,6 +49,7 @@ const AppFooter = () => {
                 &&
                 <div style={{ marginTop: 50 }}>
                     <AppBar
+
                         position="fixed"
                         sx={{
                             top: 'auto',
@@ -59,6 +60,7 @@ const AppFooter = () => {
                         }}
                     >
                         <Container
+                            disableGutters
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
@@ -74,7 +76,7 @@ const AppFooter = () => {
                                 '& .rhap_container': {
                                     backgroundColor: 'transparent',
                                     boxShadow: 'none',
-                                    padding: '0 20px',
+                                    padding: '0 20px 0 0',
                                 },
                                 '& .rhap_time': {
                                     color: '#666',
@@ -159,12 +161,13 @@ const AppFooter = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 2,
-                                minWidth: "280px",
+                                width: "280px",
                                 paddingLeft: 2,
                                 borderLeft: "1px solid #cecece"
                             }}>
                                 {/* Ảnh Thumbnail */}
                                 <Box sx={{
+                                    flexShrink: 0, // THÊM DÒNG NÀY ĐỂ CHỐNG BỊ BÓP MÉO
                                     width: 32,
                                     height: 32,
                                     backgroundColor: "#ccc",
@@ -174,14 +177,14 @@ const AppFooter = () => {
                                     <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`} alt="imeTrack"
                                         style={{
                                             objectFit: "cover",
-                                            width: 32,
-                                            height: 32,
+                                            width: "100%",
+                                            height: "100%",
                                         }}
                                     />
                                 </Box>
 
                                 {/* Text màu chữ tối */}
-                                <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, overflow: 'hidden' }}>
+                                <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, minWidth: 0, overflow: 'hidden' }}>
                                     <Typography
                                         variant="caption"
                                         sx={{ color: "#666", lineHeight: 1.2, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}

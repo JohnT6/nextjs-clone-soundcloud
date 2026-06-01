@@ -4,10 +4,13 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PeopleIcon from '@mui/icons-material/People';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { fetchDefaultImages } from "@/utils/api";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { formatTime, formatTimeAgo } from "@/utils/customHook";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import WaveSurfer from 'wavesurfer.js';
+import { useTrackContext } from "@/app/lib/track.wrapper";
 
 // Mock data giả lập giống hệt trong ảnh
 const mockComments = [
@@ -43,26 +46,61 @@ const mockComments = [
 interface IProps {
     track: ITrackTop | null
     trackComment: ITrackComment[]
+    // Khai báo kiểu cho waveSurfer, có thể null lúc ban đầu chưa load xong
+    waveSurfer: WaveSurfer | null;
 }
 
 
 const CommentTrack = (props: IProps) => {
+    const router = useRouter();
+
     const { data: session } = useSession()
-    const { track, trackComment } = props
+    const { track, trackComment, waveSurfer } = props
 
     const [yourComment, setYourComment] = useState("");
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
 
-    const handleSubmit = () => {
-        console.log(yourComment);
+    const handleSubmit = async () => {
+        const res = await sendRequest<IBackendRes<ITrackComment>>({
+            url: "http://localhost:8000/api/v1/comments",
+            method: "POST",
+            body: {
+                content: yourComment,
+                moment: Math.round(waveSurfer?.getCurrentTime() ?? 0),
+                track: track?._id
+            },
+            headers: {
+                Authorization: `Bearer ${session?.access_token}`,
+            },
+        })
+        if (res.data) {
+            setYourComment("");
+            router.refresh();
+        }
 
+    }
+
+    const handleJumpTrack = (moment: number) => {
+        // Do dùng context để cập nhật Duration bên footer và waveSurfer nên ko cần các waveSurfer này
+        // if (waveSurfer) {
+        //     const duration = waveSurfer.getDuration();
+        //     waveSurfer.seekTo(moment / duration);
+        //     waveSurfer.play()
+        // }
+        // Cập nhật Context: Ép cả Sóng âm và Footer phải nhảy theo
+        setCurrentTrack(prev => ({
+            ...prev,
+            isPlaying: true,            // Đã bấm vào số giây thì cho nhạc tự động phát luôn
+            trackCurrentTime: moment    // Bắn số giây vào đây để Footer và Sóng âm cùng nhận lệnh
+        }));
     }
 
     return (
         <Box sx={{
             bgcolor: "#ffffff", // Trả về nền trắng sáng
             color: "#333", // Chữ đổi sang màu tối
-            p: 3,
+            // p: 3,
             mt: 2,
             fontFamily: "Inter, sans-serif"
         }}>
@@ -176,7 +214,8 @@ const CommentTrack = (props: IProps) => {
                                     <Typography variant="body2" sx={{ fontWeight: "bold", color: "#999", '&:hover': { color: "#333", cursor: "pointer" } }}>
                                         {comment.user.name}
                                     </Typography>
-                                    <Typography variant="caption" sx={{ color: "#999" }}>
+                                    {/* Cần coi lại khúc này do cái footer và cái waveSurfer ko đồng bộ */}
+                                    <Typography variant="caption" sx={{ color: "#999" }} onClick={() => handleJumpTrack(comment.moment)}>
                                         at {formatTime(comment.moment)}
                                     </Typography>
                                     <Typography variant="caption" sx={{ color: "#999" }}>
