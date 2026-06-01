@@ -131,3 +131,40 @@ export const useWaveSurfer = (containerRef: React.RefObject<HTMLDivElement>, opt
 
     return waveSurfer
 }
+
+// format time moment thành 00:00
+export const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const secondsRemainder = Math.round(seconds) % 60
+    const paddedSeconds = `0${secondsRemainder}`.slice(-2)
+    return `${minutes}:${paddedSeconds}`
+}
+
+
+export const formatTimeAgo = (dateString: string) => {
+    // 1. Biến chuỗi string thành Date object
+    const date = new Date(dateString);
+    const now = new Date();
+
+    // 2. Tính khoảng cách thời gian (đổi ra giây)
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    // 3. Đem chia cho các mốc thời gian để lấy số tròn
+    if (seconds < 60) return `just now`; // Hoặc `${seconds} seconds ago`
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} mins ago`;
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hours ago`;
+
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} days ago`;
+
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} months ago`;
+
+    const years = Math.floor(days / 365);
+    return `${years} years ago`;
+};
+

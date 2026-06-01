@@ -61,4 +61,21 @@ declare global {
         setCurrentTrack: React.Dispatch<React.SetStateAction<IShareTrack>>
     }
 
+    interface ITrackComment {
+        _id: string,
+        content: string,
+        moment: number,
+        user: {
+            _id: string,
+            email: string,
+            name: string,
+            role: string,
+            type: string
+        },
+        track: string,
+        isDeleted: boolean,
+        createdAt: string,
+        updatedAt: string
+    }
+
 }

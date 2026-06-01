@@ -21,6 +21,7 @@ import Avatar from '@mui/material/Avatar';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useSession, signIn, signOut } from "next-auth/react"
+import { fetchDefaultImages } from '@/utils/api';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -232,9 +233,13 @@ export default function AppHeader() {
                                 <Link href={"/track/upload"}>Upload</Link>
                                 <Avatar
                                     onClick={handleProfileMenuOpen}
-
+                                    src={fetchDefaultImages(session.user.type)} alt="Avatar"
+                                    style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        objectFit: "cover"
+                                    }}
                                 >
-                                    Ge
                                 </Avatar>
                             </> : <>
                                 <Link
@@ -264,6 +269,6 @@ export default function AppHeader() {
             </AppBar>
             {renderMobileMenu}
             {renderMenu}
-        </Box>
+        </Box >
     );
 }

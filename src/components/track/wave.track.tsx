@@ -1,5 +1,5 @@
 'use client'
-import { useWaveSurfer } from '@/utils/customHook';
+import { formatTime, useWaveSurfer } from '@/utils/customHook';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WaveSurferOptions } from 'wavesurfer.js'
@@ -7,15 +7,17 @@ import { WaveSurferOptions } from 'wavesurfer.js'
 import './wave.scss'
 import { Pause, PauseCircle, PauseCircleOutline, PlayArrow } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
-import { sendRequest } from '@/utils/api';
+import { fetchDefaultImages, sendRequest } from '@/utils/api';
 import { useTrackContext } from '@/app/lib/track.wrapper';
+import CommentTrack from './comment.track';
 
 interface IProps {
     track: ITrackTop | null
+    trackComment: ITrackComment[]
 }
 
 const WaveTrack = (props: IProps) => {
-    const { track } = props
+    const { track, trackComment } = props
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio')
     // const id = searchParams.get('id')
@@ -146,36 +148,9 @@ const WaveTrack = (props: IProps) => {
         }
     }, [waveSurfer])
 
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60)
-        const secondsRemainder = Math.round(seconds) % 60
-        const paddedSeconds = `0${secondsRemainder}`.slice(-2)
-        return `${minutes}:${paddedSeconds}`
-    }
 
-    const arrComments = [
-        {
-            id: 1,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 10,
-            user: "username 1",
-            content: "just a comment1"
-        },
-        {
-            id: 2,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 30,
-            user: "username 2",
-            content: "just a comment3"
-        },
-        {
-            id: 3,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 50,
-            user: "username 3",
-            content: "just a comment3"
-        },
-    ]
+
+
 
     const calcLeft = (moment: number) => {
         const hashCodeTime = 199;
@@ -263,7 +238,7 @@ const WaveTrack = (props: IProps) => {
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
                             <span style={{ fontSize: 14, color: "#e5e5e5" }}>1 month ago</span>
                             <span style={{ background: "rgba(0,0,0,0.6)", padding: "4px 12px", borderRadius: 20, fontSize: 14 }}>
-                                # Pop
+                                # {track?.category}
                             </span>
                         </div>
                     </div>
@@ -274,16 +249,16 @@ const WaveTrack = (props: IProps) => {
                         <div className="duration" ref={durationRef}>00:00</div>
                         <div ref={hoverRef} className="hover-wave"></div>
                         <div className='comments' style={{ position: "relative" }}>
-                            {arrComments.map(item => {
+                            {trackComment.map(item => {
                                 return (
-                                    <Tooltip title={item.content} arrow key={item.id}>
+                                    <Tooltip title={item.content} arrow key={item._id}>
                                         <img
                                             onPointerMove={(e) => {
                                                 const hover = hoverRef.current!;
                                                 hover.style.width = calcLeft(item.moment); // Nếu muốn cái hover ra giữa thì + 3 thêm vào cái moment
                                             }}
-                                            key={item.id}
-                                            src={`http://localhost:8000/images/CHILL1.png`}
+                                            key={item._id}
+                                            src={fetchDefaultImages(item.user.type)}
                                             alt="imgComment"
                                             style={{
                                                 width: "20px",
@@ -296,6 +271,7 @@ const WaveTrack = (props: IProps) => {
                                             }} />
                                     </Tooltip>
                                 )
+
                             })}
 
                         </div>
@@ -323,6 +299,12 @@ const WaveTrack = (props: IProps) => {
                         }}>
                     </img>
                 </div>
+            </div>
+            <div>
+                <CommentTrack
+                    track={track}
+                    trackComment={trackComment}
+                />
             </div>
         </div>
     )

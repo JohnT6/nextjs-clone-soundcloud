@@ -10,6 +10,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <>
       <AppHeader />
       {children}
+      <div style={{ height: "100px" }}></div>
       <AppFooter />
     </>
   );
