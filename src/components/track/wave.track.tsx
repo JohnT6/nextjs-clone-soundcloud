@@ -1,6 +1,6 @@
 'use client'
 import { formatTime, useWaveSurfer } from '@/utils/customHook';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WaveSurferOptions } from 'wavesurfer.js'
 //@ts-ignore
@@ -16,7 +16,14 @@ interface IProps {
     trackComment: ITrackComment[]
 }
 
+// 1. Còn bug là khi chưa phát nhạc thì nhấn vào thanh process của waveSurfer thì nó phát chạy còn footer thì ko
+// 2. Khi nghe bài hát khác mà mình sang 1 bài hát khác ko phải bài đang hát ở footer thì cái thanh waveSurfer nó cũng bị chạy theo cái duration của footer lúc mình vào 
+// 3. Không nhớ đc bài hát đang phát là footer vẫn phát mình quay ra trang khác thì cái wave-track nó bị reset về như cũ ko hiện là đang phát
+// 4. Là cái chức năng mất cái footer nó làm cho khi muốn phát nhạc thì phải nhấn tới 2 lần vào nút play của waveSurfer nhấn lần 1 để nó nhận bài hát nhấn lần 2 để phát
+
 const WaveTrack = (props: IProps) => {
+    const router = useRouter();
+    const firstViewRef = useRef(true);
     const { track, trackComment } = props
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio')
@@ -158,6 +165,22 @@ const WaveTrack = (props: IProps) => {
         return `${present}%`
     }
 
+    const handleIncreaseView = async () => {
+        if (firstViewRef.current) {
+            await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
+                url: `http://localhost:8000/api/v1/tracks/increase-view`,
+                method: "POST",
+                body: {
+                    trackId: track?._id
+                }
+            })
+            router.refresh();
+            // Dùng Ref để trick lỏ để nó ko đếm thêm view khi nghe đi nghe lại nếu ko phải lần đầu vào web
+            firstViewRef.current = false;
+        }
+
+    }
+
 
     return (
         <div >
@@ -188,7 +211,8 @@ const WaveTrack = (props: IProps) => {
                             {/* Nút Play (Đổi thành màu đen, to hơn) */}
                             <div
                                 onClick={() => {
-                                    onPlayClick()
+                                    onPlayClick();
+                                    handleIncreaseView();
                                     if (track && waveSurfer)
                                         setCurrentTrack({ ...track, isPlaying: waveSurfer.isPlaying(), trackCurrentTime: waveSurfer.getCurrentTime() })
                                 }}

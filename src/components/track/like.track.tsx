@@ -29,7 +29,7 @@ const LikeTrack = (props: IProps) => {
             // Đã sửa lại URL thành /likes thay vì /comments
             const res2 = await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
                 url: `http://localhost:8000/api/v1/likes`,
-                method: "GET", // Tùy backend quy định GET hay POST để lấy danh sách
+                method: "GET",
                 queryParams: {
                     current: 1,
                     pageSize: 100,
