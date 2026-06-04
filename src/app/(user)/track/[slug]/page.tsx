@@ -5,6 +5,29 @@ import Container from '@mui/material/Container'
 import { useSearchParams } from 'next/navigation'
 
 
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+    params: Promise<{ slug: string }>
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateMetadata(
+    { params, searchParams }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+
+    const res = await sendRequest<IBackendRes<ITrackTop>>({
+        url: `http://localhost:8000/api/v1/tracks/${(await params).slug}`,
+        method: "GET",
+    })
+
+    return {
+        title: res.data?.title,
+        description: res.data?.description,
+    }
+}
+
 const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     // Gọi api ở server slide rendering để fetch data nhanh hơn
     const res = await sendRequest<IBackendRes<ITrackTop>>({
