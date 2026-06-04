@@ -16,9 +16,13 @@ export async function generateMetadata(
     { params, searchParams }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+    const temp = (await params)?.slug?.split(".html") ?? [];
+
+    const temp1 = temp[0].split("-") ?? []
+    const id = temp1[temp1.length - 1]
 
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${(await params).slug}`,
+        url: `http://localhost:8000/api/v1/tracks/${id}`,
         method: "GET",
     })
 
@@ -36,9 +40,14 @@ export async function generateMetadata(
 }
 
 const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+    const temp = (await params)?.slug?.split(".html") ?? [];
+
+    const temp1 = temp[0].split("-") ?? []
+    const id = temp1[temp1.length - 1]
+
     // Gọi api ở server slide rendering để fetch data nhanh hơn
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${(await params).slug}`,
+        url: `http://localhost:8000/api/v1/tracks/${id}`,
         method: "GET",
         // Tắt cache hoàn toàn, luôn gọi API để lấy dữ liệu mới nhất từ server mỗi khi load trang (chuẩn SSR).
         nextOption: { cache: "no-store" }
@@ -50,7 +59,7 @@ const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }
         queryParams: {
             current: 1,
             pageSize: 10,
-            trackId: (await params).slug,
+            trackId: id,
             sort: "-createdAt"
         }
     })

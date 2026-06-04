@@ -13,36 +13,6 @@ import WaveSurfer from 'wavesurfer.js';
 import { useTrackContext } from "@/app/lib/track.wrapper";
 import LikeTrack from "./like.track";
 
-// Mock data giả lập giống hệt trong ảnh
-const mockComments = [
-    {
-        id: 1,
-        user: "flywiththebirds",
-        avatar: "http://localhost:8000/images/chill1.png",
-        atTime: "2:39",
-        ago: "4 months ago",
-        content: "mustard onnat beat hi",
-        likes: 0
-    },
-    {
-        id: 2,
-        user: "ImnotTylerjones",
-        avatar: "http://localhost:8000/images/chill1.png",
-        atTime: "0:00",
-        ago: "6 months ago",
-        content: "I bet nobody hear in 2025 lol",
-        likes: 2
-    },
-    {
-        id: 3,
-        user: "InesqueVR",
-        avatar: "http://localhost:8000/images/chill1.png",
-        atTime: "0:00",
-        ago: "4 months ago",
-        content: "@imnottylerjones: You right we here in 2026",
-        likes: 0
-    }
-]
 
 interface IProps {
     track: ITrackTop | null
