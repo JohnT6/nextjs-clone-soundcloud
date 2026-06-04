@@ -11,6 +11,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 import Link from "next/link";
+import { convertSlugUrl } from "@/utils/api";
 
 // Nhớ import interface ITrackTop của bạn ở đây nếu cần
 
@@ -138,7 +139,7 @@ const MainSlider = (props: IProps) => {
                 {data.map(track => {
                     return (
                         <div className="track" key={track._id}>
-                            <Link href={`/track/${track._id}?audio=${track.trackUrl}&id=${track._id}`}>
+                            <Link href={`/track/${convertSlugUrl(track.title)}-${track._id}.html?audio=${track.trackUrl}`}>
                                 <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} alt="imgTrack" />
                                 <h4>{track.title}</h4>
                             </Link>

@@ -14,6 +14,7 @@ import { ListItem } from '@mui/material';
 import { useTrackContext } from '@/app/lib/track.wrapper';
 import { Pause } from '@mui/icons-material';
 import Link from 'next/link';
+import { convertSlugUrl } from '@/utils/api';
 
 
 const ProfileTracks = (props: any) => {
@@ -29,7 +30,7 @@ const ProfileTracks = (props: any) => {
                         <Link style={{
                             textDecoration: "none",
                             color: "black"
-                        }} href={`/track/${data._id}?audio=${data.trackUrl}&id=${data._id}`}>{data.title}</Link>
+                        }} href={`/track/${convertSlugUrl(data.title)}-${data._id}.html?audio=${data.trackUrl}`}>{data.title}</Link>
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary" component="div">
                         {data.description}

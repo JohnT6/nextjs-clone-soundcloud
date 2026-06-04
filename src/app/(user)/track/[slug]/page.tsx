@@ -25,6 +25,13 @@ export async function generateMetadata(
     return {
         title: res.data?.title,
         description: res.data?.description,
+        openGraph: {
+            title: 'Genzo',
+            description: 'Music',
+            type: 'website',
+            images: [`https://raw.githubusercontent.com/hoidanit/images-hosting/master/eric.png`],
+        },
+
     }
 }
 
