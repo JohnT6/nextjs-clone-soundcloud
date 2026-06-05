@@ -3,6 +3,7 @@ import WaveTrack from '@/components/track/wave.track'
 import { sendRequest } from '@/utils/api'
 import Container from '@mui/material/Container'
 import { useSearchParams } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 
 import type { Metadata, ResolvingMetadata } from 'next'
@@ -63,6 +64,10 @@ const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }
             sort: "-createdAt"
         }
     })
+
+    if (!res.data) {
+        notFound()
+    }
 
     return (
         <Container>
