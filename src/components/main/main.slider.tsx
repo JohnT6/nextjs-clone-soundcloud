@@ -12,6 +12,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 import Link from "next/link";
 import { convertSlugUrl } from "@/utils/api";
+import Image from "next/image";
 
 // Nhớ import interface ITrackTop của bạn ở đây nếu cần
 
@@ -83,6 +84,33 @@ const MainSlider = (props: IProps) => {
         slidesToScroll: 5,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    infinite: true,
+                    dots: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    initialSlide: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+
     };
 
     return (
@@ -140,7 +168,19 @@ const MainSlider = (props: IProps) => {
                     return (
                         <div className="track" key={track._id}>
                             <Link href={`/track/${convertSlugUrl(track.title)}-${track._id}.html?audio=${track.trackUrl}`}>
-                                <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} alt="imgTrack" />
+                                {/* <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`} alt="imgTrack" /> */}
+                                {/* ĐÂY LÀ CHÌA KHÓA: Bọc ảnh vào một cái hộp vuông (1/1) có position relative */}
+                                <div style={{ position: "relative", width: "100%", aspectRatio: "1/1", marginBottom: "10px" }}>
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
+                                        alt={track.title}
+                                        fill // Giờ nó chỉ fill đúng cái div bọc ngoài này thôi
+                                        style={{
+                                            objectFit: "cover", // Sửa thành cover để ảnh lấp đầy mà không bị méo
+                                            borderRadius: "4px"
+                                        }}
+                                    />
+                                </div>
                                 <h4>{track.title}</h4>
                             </Link>
                             <h5>{track.uploader.name}</h5>

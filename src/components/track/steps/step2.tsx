@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import axios from "axios";
 import { sendRequest } from "@/utils/api";
 import { useToast } from "@/utils/toast";
+import Image from "next/image";
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
     return (
@@ -203,7 +204,30 @@ const Step2 = (props: IProps) => {
                 >
                     <div style={{ height: 250, width: 250, background: "#ccc" }}>
                         <div>
-                            {info.imgUrl && <img style={{ height: 250, width: 250, background: "#ccc", objectFit: "cover" }} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imgUrl}`} />}
+                            {info.imgUrl
+                                &&
+                                // <img
+                                //     style={{
+                                //         height: 250,
+                                //         width: 250,
+                                //         background: "#ccc",
+                                //         objectFit: "cover"
+                                //     }}
+                                //     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imgUrl}`}
+                                // />
+                                <Image
+                                    style={{
+                                        // height: 250,
+                                        // width: 250,
+                                        background: "#ccc",
+                                        objectFit: "cover"
+                                    }}
+                                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imgUrl}`}
+                                    alt={info.title}
+                                    height={250}
+                                    width={250}
+                                />
+                            }
                         </div>
 
                     </div>

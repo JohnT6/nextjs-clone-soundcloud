@@ -10,6 +10,7 @@ import { Tooltip } from '@mui/material';
 import { fetchDefaultImages, sendRequest } from '@/utils/api';
 import { useTrackContext } from '@/app/lib/track.wrapper';
 import CommentTrack from './comment.track';
+import Image from "next/image";
 
 interface IProps {
     track: ITrackTop | null
@@ -276,7 +277,7 @@ const WaveTrack = (props: IProps) => {
                             {trackComment.map(item => {
                                 return (
                                     <Tooltip title={item.content} arrow key={item._id}>
-                                        <img
+                                        {/* <img
                                             onPointerMove={(e) => {
                                                 const hover = hoverRef.current!;
                                                 hover.style.width = calcLeft(item.moment); // Nếu muốn cái hover ra giữa thì + 3 thêm vào cái moment
@@ -287,6 +288,25 @@ const WaveTrack = (props: IProps) => {
                                             style={{
                                                 width: "20px",
                                                 height: "20px",
+                                                objectFit: "cover",
+                                                position: "absolute",
+                                                top: "71px",
+                                                zIndex: "99",
+                                                left: calcLeft(item.moment)
+                                            }} /> */}
+                                        <Image
+                                            onPointerMove={(e) => {
+                                                const hover = hoverRef.current!;
+                                                hover.style.width = calcLeft(item.moment); // Nếu muốn cái hover ra giữa thì + 3 thêm vào cái moment
+                                            }}
+                                            key={item._id}
+                                            src={fetchDefaultImages(item.user.type)}
+                                            alt={item.user.name}
+                                            width={20}
+                                            height={20}
+                                            style={{
+                                                // width: "20px",
+                                                // height: "20px",
                                                 objectFit: "cover",
                                                 position: "absolute",
                                                 top: "71px",
@@ -310,7 +330,7 @@ const WaveTrack = (props: IProps) => {
                         justifyContent: "flex-end", // Đẩy ảnh bám sát lề phải
                     }}
                 >
-                    <img
+                    {/* <img
                         src={`http://localhost:8000/images/${track?.imgUrl}`} alt="imgTrack"
                         style={{
                             background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
@@ -320,8 +340,23 @@ const WaveTrack = (props: IProps) => {
                             borderRadius: "3%",
                             objectFit: "cover",
                             overflow: "hidden"
-                        }}>
-                    </img>
+                        }}
+                    /> */}
+                    <Image
+                        src={`http://localhost:8000/images/${track?.imgUrl}`}
+                        alt={track?.title ?? "imgTrack"}
+                        width={320}
+                        height={320}
+                        style={{
+                            background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
+                            // width: 320,
+                            // height: 320,
+                            boxShadow: "0 0 10px rgba(0,0,0,0.3)", // Thêm chút bóng đổ cho ảnh nổi bật
+                            borderRadius: "3%",
+                            objectFit: "cover",
+                            overflow: "hidden"
+                        }}
+                    />
                 </div>
             </div>
             <div>

@@ -69,7 +69,7 @@ const ProfileTracks = (props: any) => {
                 component="img"
                 sx={{ width: 151 }}
                 image={`http://localhost:8000/images/${data.imgUrl}`}
-                alt="Live from space album cover"
+                alt={data.title}
             />
         </Card>
     );

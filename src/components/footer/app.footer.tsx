@@ -10,6 +10,7 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 import { useTrackContext } from "@/app/lib/track.wrapper";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 const AppFooter = () => {
     const hasMounted = useHasMounted();
@@ -174,7 +175,18 @@ const AppFooter = () => {
                                     borderRadius: '2px',
                                     overflow: 'hidden'
                                 }}>
-                                    <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`} alt="imeTrack"
+                                    {/* <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`} alt="imeTrack"
+                                        style={{
+                                            objectFit: "cover",
+                                            width: "100%",
+                                            height: "100%",
+                                        }}
+                                    /> */}
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`}
+                                        alt={currentTrack.title}
+                                        width={32}
+                                        height={32}
                                         style={{
                                             objectFit: "cover",
                                             width: "100%",
