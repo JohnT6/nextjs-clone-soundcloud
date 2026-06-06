@@ -169,7 +169,7 @@ const WaveTrack = (props: IProps) => {
     const handleIncreaseView = async () => {
         if (firstViewRef.current) {
             await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-                url: `http://localhost:8000/api/v1/tracks/increase-view`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
                 method: "POST",
                 body: {
                     trackId: track?._id
@@ -331,7 +331,7 @@ const WaveTrack = (props: IProps) => {
                     }}
                 >
                     {/* <img
-                        src={`http://localhost:8000/images/${track?.imgUrl}`} alt="imgTrack"
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`} alt="imgTrack"
                         style={{
                             background: "#333", // Tạm thời để màu xám, sau này bạn nhét thẻ <img /> vào đây
                             width: 320,
@@ -343,7 +343,7 @@ const WaveTrack = (props: IProps) => {
                         }}
                     /> */}
                     <Image
-                        src={`http://localhost:8000/images/${track?.imgUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
                         alt={track?.title ?? "imgTrack"}
                         width={320}
                         height={320}

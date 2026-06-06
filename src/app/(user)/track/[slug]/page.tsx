@@ -23,7 +23,7 @@ export async function generateMetadata(
     const id = temp1[temp1.length - 1]
 
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
         method: "GET",
     })
 
@@ -48,14 +48,14 @@ const TrackDetailPage = async ({ params }: { params: Promise<{ slug: string }> }
 
     // Gọi api ở server slide rendering để fetch data nhanh hơn
     const res = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
         method: "GET",
         // Tắt cache hoàn toàn, luôn gọi API để lấy dữ liệu mới nhất từ server mỗi khi load trang (chuẩn SSR).
         nextOption: { cache: "no-store" }
     })
 
     const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
-        url: `http://localhost:8000/api/v1/tracks/comments`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,
         method: "POST",
         queryParams: {
             current: 1,
