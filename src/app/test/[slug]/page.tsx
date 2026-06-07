@@ -1,31 +1,29 @@
+import { sendRequest } from "@/utils/api";
 import Container from "@mui/material/Container";
 
 
-export async function generateStaticParams() {
+const TestA = async () => {
+    const res = await sendRequest<any>({
+        url: `http://localhost:3000/api/test`,
+        method: "GET",
+        nextOption: {
+            // cache: "no-store" => mỗi lần f5 -> fetch data mới
+            // cache: "no-store"
 
-
-    return [
-        { slug: "1" },
-        { slug: "12" },
-        { slug: "123" },
-    ]
-}
-
-
-
-const TestGenerateStaticParams = async ({ params }: { params: Promise<{ slug: string }> }) => {
-    const { slug } = await params
-
-    // Cái này dùng để test cái cái SSG Static Site Generation khác với SSR Server Site Rendering như thế nào
-    await new Promise(resolve => setTimeout(resolve, 5000))
-
+            // => chờ hết thời gian trên (có thể tắt máy :v)
+            // => khi gửi request mới (nextjs trigger re-render) => request tiếp theo mới nhận kết quả mới
+            next: { revalidate: 10 }
+        }
+    })
     return (
-        <div>
-            <Container>
-                test slug = {slug}
-            </Container>
-        </div>
+        <Container sx={{ mt: 5 }}>
+            <div>Test random:</div>
+            <div>
+                {JSON.stringify(res)}
+            </div>
+        </Container>
     )
 }
 
-export default TestGenerateStaticParams;
+
+export default TestA;
