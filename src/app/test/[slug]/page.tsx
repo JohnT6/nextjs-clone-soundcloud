@@ -12,7 +12,10 @@ const TestA = async () => {
 
             // => chờ hết thời gian trên (có thể tắt máy :v)
             // => khi gửi request mới (nextjs trigger re-render) => request tiếp theo mới nhận kết quả mới
-            next: { revalidate: 10 }
+            // next: { revalidate: 10 }
+
+
+            next: { tags: ["genzo-validate"] }
         }
     })
     return (
