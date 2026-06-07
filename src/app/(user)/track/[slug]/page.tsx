@@ -1,4 +1,5 @@
-
+// Do cái nextjs 13 lỗi cái SSG khi dùng Route Group nên ko muốn dời cái track ra nên biết các dùng SSG với trang này nhưng ko làm các bản nextjs khác đã fix dùng bth
+// Còn khi dùng trang này với SSG thì hãy gọi api xong lấy data và dùng map để slug bằng các item của data
 import WaveTrack from '@/components/track/wave.track'
 import { sendRequest } from '@/utils/api'
 import Container from '@mui/material/Container'
