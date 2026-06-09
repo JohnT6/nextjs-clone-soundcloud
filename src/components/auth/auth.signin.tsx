@@ -250,6 +250,7 @@ export default function AuthSignin() {
                         fullWidth
                         startIcon={<GoogleIcon />}
                         disableElevation
+                        onClick={() => signIn("google")}
                         sx={{
                             backgroundColor: '#ffffff', // Google thường dùng nền trắng chữ đen hoặc nền xám
                             color: '#000000',
