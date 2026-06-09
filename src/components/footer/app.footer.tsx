@@ -201,7 +201,7 @@ const AppFooter = () => {
                                         variant="caption"
                                         sx={{ color: "#666", lineHeight: 1.2, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
                                     >
-                                        {currentTrack.uploader.name}
+                                        {currentTrack.uploader?.name ?? "Unknown name"}
                                     </Typography>
                                     <Typography
                                         variant="body2"

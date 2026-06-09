@@ -214,9 +214,16 @@ export default function AppHeader() {
                                 <SearchIcon />
                             </SearchIconWrapper>
                             <StyledInputBase
-                                placeholder="Search"
+                                placeholder="Search…"
                                 inputProps={{ 'aria-label': 'search' }}
+                                onKeyDown={(e: any) => {
+                                    if (e.key === "Enter") {
+                                        if (e?.target?.value)
+                                            router.push(`/search?q=${e?.target?.value}`)
+                                    }
+                                }}
                             />
+
                         </Search>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{
